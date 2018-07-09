@@ -3,6 +3,12 @@
 void StandardLantern::begin(Adafruit_NeoPixel &_pixels) {
   /* assign the neopixel pointer */
   pixels = &_pixels;
+
+  /* build colors */
+  colorWhiteLow = pixels->Color(0, 0, 0, 75);
+  colorWhiteMed = pixels->Color(0, 0, 0, 125);
+  colorWhiteHigh = pixels->Color(0, 0, 0, 255);
+  colorFlame = pixels->Color(255, 100, 0, 0);
 }
 
 void StandardLantern::setAllPixels(uint32_t color) {
@@ -14,17 +20,17 @@ void StandardLantern::setAllPixels(uint32_t color) {
 }
 
 void StandardLantern::low() {
-  setAllPixels(pixels->Color(0, 0, 0, valueLow));
+  setAllPixels(colorWhiteLow);
 }
 
 void StandardLantern::medium() {
-  setAllPixels(pixels->Color(0, 0, 0, valueMed));
+  setAllPixels(colorWhiteMed);
 }
 
 void StandardLantern::high() {
-  setAllPixels(pixels->Color(0, 0, 0, valueHigh));
+  setAllPixels(colorWhiteHigh);
 }
 
 void StandardLantern::classic() {
-  setAllPixels(pixels->Color(255, 75, 0, 0));
+  setAllPixels(colorFlame);
 }

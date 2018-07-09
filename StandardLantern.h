@@ -4,19 +4,21 @@
 #include <Adafruit_NeoPixel.h>
 
 class StandardLantern {
+  /* neopixels */
   Adafruit_NeoPixel *pixels;
   
   /* light levels */
-  uint8_t valueLow = 75;
-  uint8_t valueMed = 150;
-  uint8_t valueHigh = 255;
+  uint32_t colorWhiteLow;
+  uint32_t colorWhiteMed;
+  uint32_t colorWhiteHigh;
+  uint32_t colorFlame;
 
   public:
   void begin(Adafruit_NeoPixel &_pixels);
   void low(); // low white light
   void medium(); // medium white light
   void high(); // high white light
-  void classic(); // yellow light
+  void classic(); // yellow-ish light
 
   private:
   void setAllPixels(uint32_t color);

@@ -2,12 +2,19 @@
 #include <Adafruit_NeoPixel.h>
 #include "Debouncer.h"
 #include "StandardLantern.h"
-#include "Campfire.h"
+#include "FlickeringLantern.h"
+#include "RGBLantern.h"
+#include "RainbowLantern.h"
 
 /* pins */
 #define PIN_PIXELS 9
 #define PIN_BUTTON 10
 #define NUM_PIXELS 24
+
+/* mode vars */
+uint8_t modeCurrent = 0;
+uint8_t modePrevious = 99;
+uint8_t modeMax = 12;
 
 /* NeoPixels */
 Adafruit_NeoPixel pixels = Adafruit_NeoPixel(NUM_PIXELS, PIN_PIXELS, NEO_GRBW + NEO_KHZ800);
@@ -22,14 +29,12 @@ Debouncer button = Debouncer(PIN_BUTTON, TIMEOUT_DEBOUNCE, TIMEOUT_PRESS);
 
 /* Lantern controls */
 StandardLantern lantern = StandardLantern();
+FlickeringLantern lanternFlickering = FlickeringLantern();
+RGBLantern lanternRgb = RGBLantern();
+RainbowLantern lanternRainbow = RainbowLantern();
 
 /* campfire mode vars */
 #define TIMEOUT_LAST_CAMPFIRE 2500
-
-/* pixel mode vars */
-uint8_t modeCurrent = 0;
-uint8_t modePrevious = 99;
-uint8_t modeMax = 3;
 
 void setup() {
   /* start serial */
@@ -47,29 +52,12 @@ void setup() {
 
   /* start the Lantern */
   lantern.begin(pixels);
-}
-
-void modeCampfire() {
-  /* check if the timeout has passed */
-  if ((millis() - TIMEOUT_LAST_CAMPFIRE) < TIMEOUT_LAST_CAMPFIRE) {
-    return; // timeout hasn't passed
-  }
-
-  for(uint8_t i = 0; i < NUM_PIXELS; i++) {
-    uint8_t randomOnOff = random(0, 2);
-    if (randomOnOff == 1) {
-      pixels.setPixelColor(i, pixels.Color(255, 75, 0, 0));
-    } else {
-      pixels.setPixelColor(i, pixels.Color(0, 0, 0, 0));
-    }
-  }
-
-  pixels.show();
+  lanternFlickering.begin(pixels);
+  lanternRgb.begin(pixels);
+  lanternRainbow.begin(pixels);
 }
 
 void changeMode() {
-  Serial.println("MODE CHANGE!");
-  
   /* increment the mode */
   modeCurrent++;
 
@@ -103,8 +91,45 @@ void loop() {
       lantern.classic();
       break;
 
+    case 4:
+      lanternFlickering.run();
+      break;
+
+    case 5:
+      lanternRainbow.run();
+      break;
+
+    case 6:
+      lanternRgb.red();
+      break;
+
+    case 7:
+      lanternRgb.orange();
+      break;
+
+    case 8:
+      lanternRgb.yellow();
+      break;
+
+    case 9:
+      lanternRgb.green();
+      break;
+
+    case 10:
+      lanternRgb.blue();
+      break;
+
+    case 11: 
+      lanternRgb.indigo();
+      break;
+
+    case 12:
+      lanternRgb.violet();
+      break;
+
     default:
-      Serial.println("Mode unknown!");
+      /* uknown mode, set to 0 */
+      modeCurrent = 0;
       break;
   }
 
